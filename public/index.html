@@ -8,74 +8,82 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            overflow: hidden; background-color: #222; touch-action: none;
-            font-family: sans-serif; user-select: none;
+            overflow: hidden; background-color: #111; touch-action: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
         #main-menu {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 100;
+            background: radial-gradient(circle, rgba(30,30,50,0.9) 0%, rgba(0,0,0,1) 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
         }
         #main-menu h1 {
-            color: #00ccff; font-size: 40px; margin-bottom: 30px;
-            text-shadow: 0px 0px 10px #00ccff, 2px 2px 0px #000; text-align: center;
+            color: #00ffff; font-size: 50px; margin-bottom: 30px; letter-spacing: 2px;
+            text-shadow: 0px 0px 15px #00ffff, 4px 4px 0px #000; text-align: center;
+            font-weight: 900; text-transform: uppercase;
         }
         .menu-btn {
-            background: linear-gradient(to bottom, #555, #333); color: white;
-            border: 2px solid #888; padding: 12px 30px; font-size: 20px;
-            font-weight: bold; border-radius: 10px; margin: 8px; width: 220px;
-            cursor: pointer; box-shadow: 0px 4px 6px rgba(0,0,0,0.6);
+            background: linear-gradient(135deg, #444, #222); color: white;
+            border: 2px solid #666; padding: 15px 40px; font-size: 22px;
+            font-weight: bold; border-radius: 12px; margin: 10px; width: 250px;
+            cursor: pointer; box-shadow: 0px 6px 15px rgba(0,0,0,0.5);
+            transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
         }
-        .menu-btn:active { transform: scale(0.95); background: #444; }
-        #btn-play { background: linear-gradient(to bottom, #00ccff, #0088aa); border-color: #00ffff; }
+        .menu-btn:active { transform: translateY(4px); box-shadow: 0px 2px 5px rgba(0,0,0,0.5); }
+        #btn-play { background: linear-gradient(135deg, #00ccff, #0066aa); border-color: #00ffff; }
 
         #in-game-ui { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         
         #top-ui {
-            position: absolute; top: 10px; left: 0; width: 100%;
+            position: absolute; top: 15px; left: 0; width: 100%;
             display: flex; justify-content: space-between; align-items: flex-start;
-            padding: 0 15px; box-sizing: border-box; color: white; font-weight: bold; text-shadow: 1px 1px 2px black;
+            padding: 0 20px; box-sizing: border-box; color: white; font-weight: bold; text-shadow: 2px 2px 4px black;
         }
         .ui-box {
-            background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
-            border: 2px solid #555; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, rgba(40,40,40,0.8), rgba(20,20,20,0.9)); 
+            padding: 10px 15px; border-radius: 10px; border: 2px solid #555; 
+            display: flex; flex-direction: column; box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
-        #wave-progress-bar { width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 2px solid #555; }
-        #wave-progress-fill { height: 100%; width: 0%; background: limegreen; transition: width 0.3s; }
-        .currency { display: flex; align-items: center; margin-bottom: 2px; font-size: 16px; }
-        .currency span { margin-left: 5px; } 
+        #wave-progress-bar { 
+            width: 140px; height: 18px; background: #222; border-radius: 10px; 
+            overflow: hidden; margin-top: 8px; border: 2px solid #444; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        #wave-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #32cd32, #00ff00); transition: width 0.3s; }
+        .currency { display: flex; align-items: center; margin-bottom: 5px; font-size: 18px; }
+        .currency span { margin-left: 8px; } 
         
         #settings-btn {
-            background-color: #444; color: white; font-size: 24px; border: 2px solid #888;
-            border-radius: 50%; width: 45px; height: 45px; display: flex;
+            background: linear-gradient(135deg, #555, #333); color: white; font-size: 24px; 
+            border: 2px solid #777; border-radius: 50%; width: 50px; height: 50px; display: flex;
             justify-content: center; align-items: center; pointer-events: auto; cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
 
         #settings-modal {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(30, 30, 30, 0.95); border: 3px solid #00ccff; border-radius: 15px;
-            padding: 20px; text-align: center; color: white; pointer-events: auto;
-            display: none; flex-direction: column; gap: 15px; min-width: 250px; z-index: 200;
+            background: radial-gradient(circle, rgba(40,40,50,0.95) 0%, rgba(20,20,25,0.98) 100%); 
+            border: 3px solid #00ccff; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            padding: 30px; text-align: center; color: white; pointer-events: auto;
+            display: none; flex-direction: column; gap: 15px; min-width: 280px; z-index: 200;
         }
-        .modal-btn { padding: 10px 20px; font-size: 18px; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; }
-        #save-btn { background-color: #ffaa00; color: black; } /* NEW SAVE BUTTON */
-        #install-btn { background-color: #00ccff; color: black; display: none; }
-        #close-settings-btn { background-color: #ff3333; color: white; }
+        .modal-btn { padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; }
+        #save-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: black; border: 2px solid #ffdd00; } 
+        #install-btn { background: linear-gradient(to bottom, #00ffff, #00aaff); color: black; border: 2px solid #ffffff; display: none; }
+        #close-settings-btn { background: linear-gradient(to bottom, #ff4444, #cc0000); color: white; border: 2px solid #ff8888; }
 
-        #joystick-zone { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px; pointer-events: auto; }
+        #joystick-zone { position: absolute; bottom: 30px; left: 30px; width: 160px; height: 160px; pointer-events: auto; }
         #atk-btn {
-            position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px; border-radius: 50%;
-            background-color: #ff3333; color: white; font-weight: bold; font-size: 20px; border: 4px solid #880000;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.5); pointer-events: auto;
+            position: absolute; bottom: 40px; right: 40px; width: 90px; height: 90px; border-radius: 50%;
+            background: radial-gradient(circle, #ff5555 0%, #cc0000 100%); color: white; font-weight: 900; 
+            font-size: 24px; border: 4px solid #ffaaaa; box-shadow: 0px 8px 20px rgba(0,0,0,0.6); 
+            pointer-events: auto; text-shadow: 1px 1px 2px black;
         }
-        #atk-btn:active { background-color: #ffaaaa; border-color: #ff0000; transform: scale(0.95); }
+        #atk-btn:active { background: radial-gradient(circle, #ff7777 0%, #ff0000 100%); transform: translateY(4px); box-shadow: 0px 4px 10px rgba(0,0,0,0.6); border-color: #ffffff; }
         
-        /* Game Over Screen */
         #game-over-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 0, 0, 0.4); justify-content: center; align-items: center;
+            background: rgba(100, 0, 0, 0.85); justify-content: center; align-items: center;
             flex-direction: column; z-index: 300; color: white; text-shadow: 2px 2px 4px black;
         }
     </style>
@@ -85,7 +93,7 @@
     
     <div id="main-menu">
         <h1>Stickman Defender</h1>
-        <button id="btn-play" class="menu-btn">Play</button>
+        <button id="btn-play" class="menu-btn">Play Game</button>
         <button class="menu-btn" onclick="alert('Store system coming soon!')">Store / Skins</button>
         <button id="btn-menu-settings" class="menu-btn">Settings</button>
     </div>
@@ -93,7 +101,7 @@
     <div id="in-game-ui">
         <div id="top-ui">
             <div class="ui-box">
-                <div id="wave-text">Wave 1</div>
+                <div id="wave-text" style="font-size: 20px;">Wave 1</div>
                 <div id="wave-progress-bar"><div id="wave-progress-fill"></div></div>
             </div>
             <div style="display: flex; gap: 15px;">
@@ -105,19 +113,19 @@
             </div>
         </div>
         <div id="joystick-zone"></div>
-        <button id="atk-btn">ATK</button>
+        <button id="atk-btn">FIRE</button>
     </div>
 
     <div id="settings-modal">
-        <h2>Settings</h2>
+        <h2 style="margin-top: 0; text-transform: uppercase; color: #00ffff; letter-spacing: 1px;">Settings</h2>
         <button id="save-btn" class="modal-btn">💾 Save Progress</button>
-        <button id="install-btn" class="modal-btn">📥 Install Game</button>
-        <button id="close-settings-btn" class="modal-btn">Close Settings</button>
+        <button id="install-btn" class="modal-btn">📥 Install Game App</button>
+        <button id="close-settings-btn" class="modal-btn">Close Menu</button>
     </div>
 
     <div id="game-over-screen">
-        <h1 style="font-size: 50px;">BASE DESTROYED</h1>
-        <button class="menu-btn" onclick="location.reload()">Restart Game</button>
+        <h1 id="game-over-title" style="font-size: 60px; color: #ff3333; text-shadow: 0 0 20px red, 4px 4px 0px black;">BASE DESTROYED</h1>
+        <button class="menu-btn" onclick="location.reload()">Return to Menu</button>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
