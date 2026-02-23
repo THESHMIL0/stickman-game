@@ -4,84 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    <title>My Mobile Game</title>
-    
+    <title>Stickman Defender</title>
     <style>
-        /* Make the background black and hide any scrollbars */
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #222;
-            touch-action: none; /* Stops accidental swipe-to-refresh */
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            overflow: hidden; background-color: #222; touch-action: none;
+            font-family: sans-serif;
         }
-
-        /* The game board */
-        #gameCanvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Transparent layer to hold the UI controls over the game */
+        #gameCanvas { display: block; width: 100%; height: 100%; }
         #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Let clicks pass through to the buttons */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
         }
+        /* --- NEW UI ELEMENTS --- */
+        #top-ui {
+            position: absolute; top: 10px; left: 0; width: 100%;
+            display: flex; justify-content: space-between; padding: 0 20px;
+            box-sizing: border-box; color: white; font-weight: bold; text-shadow: 1px 1px 2px black;
+        }
+        .ui-box {
+            background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;
+            border: 2px solid #555;
+        }
+        #wave-progress-bar {
+            width: 150px; height: 20px; background: #333; border-radius: 10px; overflow: hidden;
+            margin-top: 5px; border: 2px solid #555;
+        }
+        #wave-progress-fill { height: 100%; width: 30%; background: limegreen; }
+        #level-text { font-size: 24px; margin-top: 10px;}
+        .currency { display: flex; align-items: center; margin-bottom: 5px; }
+        .currency img { width: 20px; margin-right: 5px; }
 
-        /* Joystick Container */
+        /* Controls */
         #joystick-zone {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 150px;
-            height: 150px;
-            pointer-events: auto; /* Allow touching here */
+            position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px;
+            pointer-events: auto;
         }
-
-        /* Attack Button */
         #atk-btn {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #ff3333;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            border: 4px solid #880000;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-            pointer-events: auto; /* Allow touching here */
-            user-select: none; /* Prevent text highlighting */
+            position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px;
+            border-radius: 50%; background-color: #ff3333; color: white;
+            font-weight: bold; font-size: 20px; border: 4px solid #880000;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.5); pointer-events: auto;
+            user-select: none;
         }
-
-        /* Change color when the button is actively being pressed */
-        #atk-btn:active {
-            background-color: #ffaaaa;
-            border-color: #ff0000;
-        }
+        #atk-btn:active { background-color: #ffaaaa; border-color: #ff0000; }
     </style>
 </head>
 <body>
-
     <canvas id="gameCanvas"></canvas>
-
     <div id="ui-layer">
+        <div id="top-ui">
+            <div class="ui-box">
+                <div>Wave 4/15</div>
+                <div id="wave-progress-bar"><div id="wave-progress-fill"></div></div>
+            </div>
+            <div id="level-text">Level 15</div>
+            <div class="ui-box">
+                <div class="currency">💎 320</div>
+                <div class="currency">🪙 4550</div>
+            </div>
+        </div>
         <div id="joystick-zone"></div>
         <button id="atk-btn">ATK</button>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
-    
     <script src="game.js"></script>
-
 </body>
 </html>
