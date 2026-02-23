@@ -13,7 +13,6 @@
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
-        /* --- MAIN MENU --- */
         #main-menu {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column;
@@ -21,20 +20,17 @@
         }
         #main-menu h1 {
             color: #00ccff; font-size: 40px; margin-bottom: 30px;
-            text-shadow: 0px 0px 10px #00ccff, 2px 2px 0px #000;
-            text-align: center;
+            text-shadow: 0px 0px 10px #00ccff, 2px 2px 0px #000; text-align: center;
         }
         .menu-btn {
             background: linear-gradient(to bottom, #555, #333); color: white;
             border: 2px solid #888; padding: 12px 30px; font-size: 20px;
             font-weight: bold; border-radius: 10px; margin: 8px; width: 200px;
             cursor: pointer; box-shadow: 0px 4px 6px rgba(0,0,0,0.6);
-            transition: transform 0.1s, background 0.1s;
         }
         .menu-btn:active { transform: scale(0.95); background: #444; }
         #btn-play { background: linear-gradient(to bottom, #00ccff, #0088aa); border-color: #00ffff; }
 
-        /* --- IN-GAME UI (Hidden at start) --- */
         #in-game-ui { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         
         #top-ui {
@@ -46,20 +42,17 @@
             background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
             border: 2px solid #555; display: flex; flex-direction: column;
         }
-        #wave-progress-bar {
-            width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 2px solid #555;
-        }
-        #wave-progress-fill { height: 100%; width: 0%; background: limegreen; } /* Reset to 0% */
-        .currency { display: flex; align-items: center; margin-bottom: 2px; font-size: 14px; }
+        #wave-progress-bar { width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 2px solid #555; }
+        #wave-progress-fill { height: 100%; width: 0%; background: limegreen; }
+        .currency { display: flex; align-items: center; margin-bottom: 2px; font-size: 16px; }
+        .currency span { margin-left: 5px; } /* Space between emoji and number */
         
         #settings-btn {
             background-color: #444; color: white; font-size: 24px; border: 2px solid #888;
             border-radius: 50%; width: 45px; height: 45px; display: flex;
-            justify-content: center; align-items: center; pointer-events: auto;
-            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            justify-content: center; align-items: center; pointer-events: auto; cursor: pointer;
         }
 
-        /* Settings Modal */
         #settings-modal {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(30, 30, 30, 0.95); border: 3px solid #00ccff; border-radius: 15px;
@@ -70,7 +63,6 @@
         #install-btn { background-color: #00ccff; color: black; display: none; }
         #close-settings-btn { background-color: #ff3333; color: white; }
 
-        /* Controls */
         #joystick-zone { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px; pointer-events: auto; }
         #atk-btn {
             position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px; border-radius: 50%;
@@ -87,20 +79,19 @@
         <h1>Stickman Defender</h1>
         <button id="btn-play" class="menu-btn">Play</button>
         <button class="menu-btn" onclick="alert('Coming soon!')">Characters</button>
-        <button class="menu-btn" onclick="alert('Coming soon!')">Store / Skins</button>
         <button id="btn-menu-settings" class="menu-btn">Settings</button>
     </div>
 
     <div id="in-game-ui">
         <div id="top-ui">
             <div class="ui-box">
-                <div>Wave 1</div>
+                <div id="wave-text">Wave 1</div>
                 <div id="wave-progress-bar"><div id="wave-progress-fill"></div></div>
             </div>
             <div style="display: flex; gap: 15px;">
                 <div class="ui-box">
-                    <div class="currency"><span>💎</span> 0</div>
-                    <div class="currency"><span>🪙</span> 0</div>
+                    <div class="currency">💎 <span id="gem-count">0</span></div>
+                    <div class="currency">🪙 <span id="coin-count">0</span></div>
                 </div>
                 <div id="settings-btn">⚙️</div>
             </div>
