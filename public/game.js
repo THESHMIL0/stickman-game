@@ -1,3 +1,4 @@
+// --- 1. PWA & Install Setup ---
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.log); }
 let deferredPrompt;
 const installBtn = document.getElementById('install-btn');
@@ -21,10 +22,31 @@ const mainMenu = document.getElementById('main-menu');
 const inGameUI = document.getElementById('in-game-ui');
 const settingsModal = document.getElementById('settings-modal');
 
+// Declare joystickManager here, but don't build it yet!
+let joystickManager;
+
 document.getElementById('btn-play').addEventListener('click', () => {
     mainMenu.style.display = 'none';
     inGameUI.style.display = 'block';
     gameState = 'PLAYING';
+    
+    // FIX: Build the joystick ONLY AFTER the UI is visible!
+    if (!joystickManager) {
+        joystickManager = nipplejs.create({
+            zone: document.getElementById('joystick-zone'), 
+            mode: 'static', 
+            position: { left: '50%', top: '50%' }, 
+            color: 'white'
+        });
+        
+        joystickManager.on('move', (evt, data) => { 
+            if(data && data.vector) {
+                player.dx = data.vector.x; 
+                player.dy = -data.vector.y; 
+            }
+        });
+        joystickManager.on('end', () => { player.dx = 0; player.dy = 0; });
+    }
 });
 
 document.getElementById('btn-menu-settings').addEventListener('click', () => settingsModal.style.display = 'flex');
@@ -46,25 +68,12 @@ let enemies = [];
 
 function resizeCanvas() {
     canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    // FIX 1: We gave you way more room to walk up and down!
     roadTop = canvas.height * 0.45; 
     roadBottom = canvas.height - 30;
     if(player.y === 0 || player.y < roadTop) player.y = canvas.height * 0.7; 
 }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas(); 
-
-const joystickManager = nipplejs.create({
-    zone: document.getElementById('joystick-zone'), mode: 'static', position: { left: '50%', top: '50%' }, color: 'white'
-});
-// FIX 2: Safely check the joystick data to prevent it from getting stuck
-joystickManager.on('move', (evt, data) => { 
-    if(data && data.vector) {
-        player.dx = data.vector.x; 
-        player.dy = -data.vector.y; 
-    }
-});
-joystickManager.on('end', () => { player.dx = 0; player.dy = 0; });
 
 document.getElementById('atk-btn').addEventListener('touchstart', (e) => { e.preventDefault(); attack(); });
 document.getElementById('atk-btn').addEventListener('mousedown', attack);
@@ -119,23 +128,18 @@ function drawStickman(x, y, isEnemy, damageFlash) {
     ctx.restore();
 }
 
-// FIX 3: Delta Time variable setup
 let lastTime = performance.now();
 
 function gameLoop(currentTime) {
-    // Delta Time Calculation (Fixes the 120Hz hyper-speed bug!)
     let dt = (currentTime - lastTime) / 1000;
-    if (isNaN(dt) || dt > 0.1) dt = 0.016; // Prevent lag spikes
+    if (isNaN(dt) || dt > 0.1) dt = 0.016; 
     lastTime = currentTime;
-    
-    // timeScale will be exactly 1.0 at 60fps, and 0.5 at 120fps.
     let timeScale = dt * 60; 
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWorld();
 
     if (gameState === 'PLAYING') {
-        // Multiply movement by timeScale so it's consistent on all phone screens
         player.x += player.dx * player.speed * timeScale;
         player.y += player.dy * player.speed * timeScale;
         
@@ -148,9 +152,7 @@ function gameLoop(currentTime) {
         if (Math.abs(player.dx) > 0.1 || Math.abs(player.dy) > 0.1) player.animationFrame += 0.25 * timeScale; 
         else player.animationFrame = 0;
 
-        // Spawn Enemies (reduced rate to account for correct timing)
         if (Math.random() < 0.015 * timeScale) { 
-            // Give them 2 HP now!
             enemies.push({ x: canvas.width + 50, y: roadTop + Math.random() * (roadBottom - roadTop), hp: 2, damageFlash: 0, speed: 1.5 + Math.random() });
         }
 
@@ -165,14 +167,12 @@ function gameLoop(currentTime) {
             let p = projectiles[i];
             p.x += p.speed * timeScale;
             
-            // FIX 4: Proper AABB Collision checking (Much larger, accurate hitbox)
             let pRight = p.x + p.width;
             let pBottom = p.y + p.height;
             let hit = false;
 
             for (let j = enemies.length - 1; j >= 0; j--) {
                 let e = enemies[j];
-                // Enemy hitbox bounds (Top to bottom, left to right)
                 let eLeft = e.x - 30;
                 let eRight = e.x + 30;
                 let eTop = e.y - 45;
@@ -181,12 +181,12 @@ function gameLoop(currentTime) {
                 if (pRight > eLeft && p.x < eRight && pBottom > eTop && p.y < eBottom) {
                     e.hp -= 1;
                     e.damageFlash = 10; 
-                    e.x += 15; // Knockback effect!
+                    e.x += 15; 
                     hit = true;
                     
                     if (e.hp <= 0) {
                         enemies.splice(j, 1);
-                        myCoins += 10; // Give money!
+                        myCoins += 10; 
                         document.getElementById('coin-count').innerText = myCoins;
                     }
                     break; 
@@ -212,7 +212,6 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 }
 
-// Ensure lastTime is set correctly before starting loop
 requestAnimationFrame((time) => {
     lastTime = time;
     gameLoop(time);
