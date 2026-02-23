@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    <title>Stickman Defender</title>
+    <title>Animated Stickman</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
@@ -16,26 +16,40 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
         }
-        /* --- NEW UI ELEMENTS --- */
+        
+        /* --- NEW: INSTALL BUTTON --- */
+        #install-btn {
+            display: none; /* Hidden by default until JS shows it */
+            position: absolute; top: 80px; left: 20px;
+            padding: 10px 15px; background-color: #00ccff; color: #000;
+            border: none; border-radius: 8px; font-weight: bold; font-size: 16px;
+            pointer-events: auto; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        /* --- UI LAYOUT --- */
         #top-ui {
             position: absolute; top: 10px; left: 0; width: 100%;
-            display: flex; justify-content: space-between; padding: 0 20px;
-            box-sizing: border-box; color: white; font-weight: bold; text-shadow: 1px 1px 2px black;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 0 15px; box-sizing: border-box; color: white; 
+            font-weight: bold; text-shadow: 1px 1px 2px black;
         }
         .ui-box {
-            background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;
-            border: 2px solid #555;
+            background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
+            border: 2px solid #555; display: flex; flex-direction: column;
         }
         #wave-progress-bar {
-            width: 150px; height: 20px; background: #333; border-radius: 10px; overflow: hidden;
-            margin-top: 5px; border: 2px solid #555;
+            width: 120px; height: 15px; background: #333; border-radius: 10px; 
+            overflow: hidden; margin-top: 5px; border: 2px solid #555;
         }
         #wave-progress-fill { height: 100%; width: 30%; background: limegreen; }
-        #level-text { font-size: 24px; margin-top: 10px;}
-        .currency { display: flex; align-items: center; margin-bottom: 5px; }
-        .currency img { width: 20px; margin-right: 5px; }
+        #level-text { 
+            font-size: 22px; margin: 0 10px; text-align: center; 
+            background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 10px;
+        }
+        .currency { display: flex; align-items: center; margin-bottom: 2px; font-size: 14px; }
+        .currency span { margin-right: 5px; font-size: 16px; }
 
-        /* Controls */
+        /* --- CONTROLS --- */
         #joystick-zone {
             position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px;
             pointer-events: auto;
@@ -44,29 +58,32 @@
             position: absolute; bottom: 30px; right: 30px; width: 80px; height: 80px;
             border-radius: 50%; background-color: #ff3333; color: white;
             font-weight: bold; font-size: 20px; border: 4px solid #880000;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.5); pointer-events: auto;
-            user-select: none;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.5); pointer-events: auto; user-select: none;
         }
-        #atk-btn:active { background-color: #ffaaaa; border-color: #ff0000; }
+        #atk-btn:active { background-color: #ffaaaa; border-color: #ff0000; transform: scale(0.95); }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
     <div id="ui-layer">
+        <button id="install-btn">📲 Install Game</button>
+        
         <div id="top-ui">
             <div class="ui-box">
-                <div>Wave 4/15</div>
+                <div>Wave 1/15</div>
                 <div id="wave-progress-bar"><div id="wave-progress-fill"></div></div>
             </div>
-            <div id="level-text">Level 15</div>
+            <div id="level-text">Level 1</div>
             <div class="ui-box">
-                <div class="currency">💎 320</div>
-                <div class="currency">🪙 4550</div>
+                <div class="currency"><span>💎</span> 0</div>
+                <div class="currency"><span>🪙</span> 0</div>
             </div>
         </div>
+
         <div id="joystick-zone"></div>
         <button id="atk-btn">ATK</button>
     </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
     <script src="game.js"></script>
 </body>
