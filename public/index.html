@@ -3,62 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Multiplayer Stickman Fighter</title>
+    <link rel="manifest" href="manifest.json">
+    <title>My Mobile Game</title>
+    
     <style>
-        body {
+        /* Make the background black and hide any scrollbars */
+        body, html {
             margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
-            background-color: #333; /* Dark background */
-            touch-action: none; /* Prevent default touch actions like scrolling */
+            background-color: #222;
+            touch-action: none; /* Stops accidental swipe-to-refresh */
         }
-        canvas {
-            display: block; /* Removes bottom margin on canvas */
-            background-color: #f0f0f0;
+
+        /* The game board */
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
-        /* Container for the joystick on the bottom left */
+
+        /* Transparent layer to hold the UI controls over the game */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through to the buttons */
+        }
+
+        /* Joystick Container */
         #joystick-zone {
             position: absolute;
             bottom: 20px;
             left: 20px;
             width: 150px;
             height: 150px;
-            z-index: 10;
+            pointer-events: auto; /* Allow touching here */
         }
-        /* Container for the attack button on the bottom right */
-        #attack-btn {
+
+        /* Attack Button */
+        #atk-btn {
             position: absolute;
-            bottom: 40px;
-            right: 40px;
+            bottom: 30px;
+            right: 30px;
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background-color: rgba(255, 0, 0, 0.5);
-            border: 4px solid red;
+            background-color: #ff3333;
             color: white;
             font-weight: bold;
             font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none;
-            z-index: 10;
+            border: 4px solid #880000;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+            pointer-events: auto; /* Allow touching here */
+            user-select: none; /* Prevent text highlighting */
         }
-        /* Make button pop when pressed */
-        #attack-btn:active {
-            background-color: rgba(255, 0, 0, 0.8);
-            transform: scale(0.95);
+
+        /* Change color when the button is actively being pressed */
+        #atk-btn:active {
+            background-color: #ffaaaa;
+            border-color: #ff0000;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    
-    <div id="joystick-zone"></div>
-    <div id="attack-btn">ATK</div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+        <div id="joystick-zone"></div>
+        <button id="atk-btn">ATK</button>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
     
     <script src="game.js"></script>
+
 </body>
 </html>
