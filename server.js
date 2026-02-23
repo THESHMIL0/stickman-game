@@ -13,24 +13,34 @@ const players = {};
 io.on('connection', (socket) => {
     console.log(`A player connected: ${socket.id}`);
 
-    // Add new player to the center of the screen
+    // Add state for attacking
     players[socket.id] = {
         x: 400, 
         y: 300, 
-        health: 100
+        isAttacking: false,
+        facingRight: true
     };
 
     socket.emit('currentPlayers', players);
     socket.broadcast.emit('newPlayer', { id: socket.id, player: players[socket.id] });
 
-    // NEW: Listen for movement from a player
-    socket.on('playerMovement', (movementData) => {
-        // Update the server's record of this player
-        players[socket.id].x = movementData.x;
-        players[socket.id].y = movementData.y;
-        
-        // Tell all OTHER players about this movement
-        socket.broadcast.emit('playerMoved', { id: socket.id, x: movementData.x, y: movementData.y });
+    // Handle movement AND attack state updates
+    socket.on('playerUpdate', (data) => {
+        if (players[socket.id]) {
+            players[socket.id].x = data.x;
+            players[socket.id].y = data.y;
+            players[socket.id].isAttacking = data.isAttacking;
+            players[socket.id].facingRight = data.facingRight;
+            
+            // Broadcast the full update to everyone else
+            socket.broadcast.emit('playerUpdated', { 
+                id: socket.id, 
+                x: data.x, 
+                y: data.y,
+                isAttacking: data.isAttacking,
+                facingRight: data.facingRight
+            });
+        }
     });
 
     socket.on('disconnect', () => {
