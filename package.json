@@ -1,6 +1,7 @@
 {
-  "name": "stickman-game",
+  "name": "stickman-defender",
   "version": "1.0.0",
+  "description": "Multiplayer Game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
