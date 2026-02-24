@@ -1,33 +1,26 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-
-// Serve the 'public' folder
-app.use(express.static('public'));
+// server.js (Node.js with Socket.io)
+let connectedPlayers = 0;
+let enemyState = { x: 100, y: 100, speed: 5, isAlive: true };
 
 io.on('connection', (socket) => {
-    console.log('A player connected:', socket.id);
+    connectedPlayers++;
+    console.log('A player joined! Total:', connectedPlayers);
 
-    socket.on('syncMovement', data => socket.broadcast.emit('teammateMoved', data));
-    socket.on('shoot', proj => socket.broadcast.emit('teammateShot', proj));
-    
-    // Player 1 sends the official enemy list, server bounces it to Player 2
-    socket.on('hostSync', data => socket.broadcast.emit('hostSync', data));
-    
-    // Player 2 tells Player 1 they shot an enemy
-    socket.on('enemyHit', id => socket.broadcast.emit('enemyHit', id));
-    
-    // Share the Game Over screen
-    socket.on('gameOver', data => socket.broadcast.emit('gameOver', data));
+    // Goal 1: Only start when 2 players join
+    if (connectedPlayers === 2) {
+        io.emit('gameStart', enemyState); // Tell both phones to start!
+    }
+
+    // Goal 3: Syncing the kill
+    socket.on('playerKilledEnemy', () => {
+        if (enemyState.isAlive) {
+            enemyState.isAlive = false;
+            // Tell EVERYONE the enemy is dead
+            io.emit('enemyDied'); 
+        }
+    });
 
     socket.on('disconnect', () => {
-        console.log('A player disconnected');
+        connectedPlayers--;
     });
 });
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
