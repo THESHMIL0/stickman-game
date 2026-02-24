@@ -1,3 +1,3 @@
 self.addEventListener('fetch', function(event) {
-    // Empty listener to satisfy PWA requirements
+    // Empty listener to trick the browser into allowing installation
 });
