@@ -1,7 +1,7 @@
 {
   "name": "stickman-defender",
   "version": "1.0.0",
-  "description": "Multiplayer Game",
+  "description": "Multiplayer Tower Defense",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
